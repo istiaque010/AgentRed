@@ -49,13 +49,38 @@ charts. Headline figures from the [sample report](examples/sample-report/)
 
 ## Install
 
-Requires **Python 3.11+**. The steps are the same on every OS; only the shell
-syntax for creating/activating a virtual environment differs.
+Requires **Python 3.11+**.
+
+### Quickest — from PyPI
+
+```bash
+pip install agentred
+```
+
+Then run it (works on Windows, macOS, Linux):
+
+```bash
+python -m agentred version
+```
+
+Optional extras: `pip install "agentred[ollama]"` (real local-model backend) or
+`pip install "agentred[langgraph]"` (LangGraph ReAct backend). The examples below
+use `python -m agentred`, which always works; the shorter `agentred` alias works
+when Python's scripts directory is on your `PATH`.
+
+> The bundled example config and sample report referenced below live in this
+> repository — clone it (see next) if you want those files locally, or write your
+> own `agent.yaml`.
+
+### From source (for development)
+
+The steps are the same on every OS; only the shell syntax for creating/activating
+a virtual environment differs.
 
 **1. Clone:**
 
 ```bash
-git clone https://github.com/your-org/AgentRed.git
+git clone https://github.com/istiaque010/AgentRed.git
 cd AgentRed
 ```
 
