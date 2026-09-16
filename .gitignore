@@ -10,9 +10,9 @@ venv/
 env/
 
 # AgentRed assessment output
-out/
-reports/
-*.trace.json
+#out/
+#reports/
+#*.trace.json
 
 # Tooling
 .pytest_cache/
