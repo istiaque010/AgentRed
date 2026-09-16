@@ -9,7 +9,7 @@ description = "An open-source red-teaming framework for security assessment of A
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "AgentRed contributors" }]
+authors = [{ name = "Istiaque Ahmed" }]
 keywords = [
     "ai-security",
     "llm-security",

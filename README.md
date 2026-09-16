@@ -406,4 +406,4 @@ is **not** a guarantee of overall agent safety.
 
 ## License
 
-[MIT](LICENSE) © AgentRed contributors.
+[MIT](LICENSE) © 2026 Istiaque Ahmed (@istiaque010)
