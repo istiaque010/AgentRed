@@ -44,8 +44,14 @@ charts. Headline figures from the [sample report](examples/sample-report/)
   <img src="https://raw.githubusercontent.com/istiaque010/AgentRed/main/examples/sample-report/severity_distribution.svg" alt="Successful attacks by severity" width="680">
 </p>
 
-📄 See the full sample: **[`examples/sample-report/report.md`](examples/sample-report/report.md)**
-(renders on GitHub) · the HTML version adds a one-click **Save as PDF** button.
+<p align="center">
+  <a href="out/AgentRed_%20An%20Open-Source%20Red-Teaming%20Framework%20for%20Security%20Assessment%20of%20AI%20Agents.pdf">
+    <img src="https://img.shields.io/badge/%F0%9F%93%84%20View%20Full%20Sample%20Report-PDF-e5484d?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="View the full sample report (PDF)">
+  </a>
+</p>
+
+Or browse it on GitHub: **[`examples/sample-report/report.md`](examples/sample-report/report.md)**
+(renders inline) · the HTML version adds a one-click **Save as PDF** button.
 
 ## Install
 
