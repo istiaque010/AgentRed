@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentRed: An Open-Source Red-Teaming Framework for Security Assessment of AI Agents</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#171a21; --ink:#e7e9ee; --muted:#9aa3b2;
+    --line:#262b36; --accent:#e5484d;
+    --crit:#e5484d; --high:#f5a524; --med:#3b82f6; --low:#22c55e;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+    font:15px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .pdf-btn { position:fixed; top:16px; right:16px; z-index:50;
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:10px 15px; font-size:13px; font-weight:700; cursor:pointer;
+    box-shadow:0 3px 12px rgba(0,0,0,0.45); }
+  .pdf-btn:hover { filter:brightness(1.08); }
+  .pdf-btn:active { transform:translateY(1px); }
+  /* margin:0 so the dark body background fills the ENTIRE page (no white
+     borders); the page spacing is added back as padding on .wrap. */
+  @page { size:A4; margin:0; }
+  @media print {
+    .no-print { display:none !important; }
+    html, body { background:var(--bg) !important; }
+    .wrap { max-width:none; padding:14mm; }
+    figure, table, .finding, .card, ol.timeline li { break-inside:avoid;
+      page-break-inside:avoid; }
+    h1, h2, h3 { break-after:avoid; page-break-after:avoid; }
+    a { color:inherit; text-decoration:none; }
+  }
+  .wrap { max-width:980px; margin:0 auto; padding:32px 20px 64px; }
+  header { border-bottom:1px solid var(--line); padding-bottom:18px; margin-bottom:24px; }
+  h1 { margin:0 0 6px; font-size:26px; line-height:1.25; }
+  h1 .red { color:var(--accent); }
+  h1 .h1-sub { font-size:15px; font-weight:600; color:var(--ink); }
+  .sub { color:var(--muted); font-size:13px; }
+  h2 { font-size:19px; margin:38px 0 12px; padding-bottom:6px;
+    border-bottom:1px solid var(--line); }
+  h3 { font-size:15px; margin:26px 0 10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:14px 16px; }
+  .card .k { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .card .v { font-size:22px; font-weight:600; margin-top:4px; }
+  .risk-LOW { color:var(--low); } .risk-MEDIUM { color:var(--med); }
+  .risk-HIGH { color:var(--high); } .risk-CRITICAL { color:var(--crit); }
+  figure { margin:16px 0; }
+  figure svg { max-width:100%; height:auto; display:block; }
+  figcaption { color:var(--muted); font-size:12px; margin-top:6px; }
+  table { width:100%; border-collapse:collapse; background:var(--panel);
+    border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:8px 0; }
+  th,td { padding:9px 12px; border-bottom:1px solid var(--line); text-align:left;
+    vertical-align:top; }
+  th { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  td.num, th.num { text-align:right; }
+  td.ctr, th.ctr { text-align:center; }
+  tr:last-child td { border-bottom:none; }
+  .table-scroll { overflow-x:auto; }
+  .sev { display:inline-block; font-size:10px; font-weight:700; padding:1px 7px;
+    border-radius:999px; color:#0b0d10; }
+  .sev.CRITICAL { background:var(--crit); } .sev.HIGH { background:var(--high); }
+  .sev.MEDIUM { background:var(--med); } .sev.LOW { background:var(--low); }
+  .status.VULNERABLE { color:var(--crit); font-weight:700; }
+  .status.RESISTED { color:var(--low); font-weight:700; }
+  .swatch { display:inline-block; width:15px; height:15px; border-radius:3px;
+    vertical-align:middle; border:1px solid rgba(255,255,255,0.15); }
+  tr.current td { background:rgba(245,165,36,0.12); }
+  tr.current .risk-tag { font-weight:700; }
+  .cat-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+  .cat-head .meta { color:var(--muted); font-size:13px; }
+  .finding { background:var(--panel); border:1px solid var(--line);
+    border-left:4px solid var(--line); border-radius:10px; padding:16px 18px; margin:12px 0; }
+  .finding.sev-CRITICAL { border-left-color:var(--crit); }
+  .finding.sev-HIGH { border-left-color:var(--high); }
+  .finding.sev-MEDIUM { border-left-color:var(--med); }
+  .finding.sev-LOW { border-left-color:var(--low); }
+  .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 8px;
+    border-radius:999px; color:#0b0d10; }
+  .badge.CRITICAL { background:var(--crit); } .badge.HIGH { background:var(--high); }
+  .badge.MEDIUM { background:var(--med); } .badge.LOW { background:var(--low); }
+  .finding h3 { margin:0 0 8px; font-size:15px; }
+  .finding p { margin:6px 0; }
+  .finding .label, td .label { color:var(--muted); }
+  code { background:#0b0d10; border:1px solid var(--line); border-radius:5px;
+    padding:1px 6px; font-size:12px; word-break:break-word; }
+  td code { font-size:11px; }
+  ol.timeline { list-style:none; padding-left:0; }
+  ol.timeline li { padding:6px 0 6px 18px; border-left:2px solid var(--line);
+    margin-left:6px; position:relative; }
+  ol.timeline li::before { content:""; position:absolute; left:-6px; top:12px;
+    width:9px; height:9px; border-radius:50%; background:var(--accent); }
+  footer { margin-top:40px; color:var(--muted); font-size:12px;
+    border-top:1px solid var(--line); padding-top:16px; }
+</style>
+</head>
+<body>
+<button class="pdf-btn no-print" onclick="window.print()"
+        title="Save this report as a PDF (opens your browser's print dialog — choose 'Save as PDF' and keep 'Background graphics' on)">
+  &#128190; Save as PDF
+</button>
+<div class="wrap">
+  <header>
+    <h1><span class="red">AgentRed:</span> <span class="h1-sub">An Open-Source Red-Teaming Framework for Security Assessment of AI Agents</span></h1>
+    <div class="sub">Security Assessment Report · {{ meta.assessment_id }} · {{ meta.generated_at }} · Target: {{ meta.agent_name }}</div>
+  </header>
+
+  <h2>1. Executive Summary</h2>
+  <div class="grid">
+    <div class="card"><div class="k">Target Agent</div><div class="v" style="font-size:16px">{{ meta.agent_name }}</div></div>
+    <div class="card"><div class="k">Model</div><div class="v" style="font-size:16px">{{ meta.model }}</div></div>
+    <div class="card"><div class="k">Framework</div><div class="v" style="font-size:14px">{{ meta.framework }}</div></div>
+    <div class="card"><div class="k">Level</div><div class="v" style="font-size:16px">{{ meta.level | capitalize }} Scan</div></div>
+    <div class="card"><div class="k">Total Attacks</div><div class="v">{{ assessment.total_attacks }}</div></div>
+    <div class="card"><div class="k">Successful</div><div class="v">{{ assessment.successful_attacks }}</div></div>
+    <div class="card"><div class="k">Attack Success Rate</div><div class="v">{{ asr_pct }}%</div></div>
+    <div class="card"><div class="k">Overall Risk</div><div class="v risk-{{ assessment.risk }}">{{ assessment.risk }}</div></div>
+  </div>
+  <figure>{{ charts.security_score | safe }}<figcaption>Figure 1. Overall security score and risk band.</figcaption></figure>
+
+  <h2>2. Results Overview</h2>
+
+  <h3>2.1 Attack Category Summary</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Category</th><th class="num">Tests</th><th class="num">Successful</th><th class="num">ASR</th><th class="ctr">Worst Severity</th></tr></thead>
+    <tbody>
+    {% for c in breakdown %}
+      <tr>
+        <td>{{ c.label }}</td>
+        <td class="num">{{ c.total }}</td>
+        <td class="num">{{ c.successful }}</td>
+        <td class="num">{{ (c.asr * 100) | round(1) }}%</td>
+        <td class="ctr">{% if c.templates %}<span class="sev {{ c.templates[0].severity }}">{{ c.templates[0].severity }}</span>{% else %}-{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <figure>{{ charts.asr_by_category | safe }}<figcaption>Figure 2. Attack Success Rate by attack category.</figcaption></figure>
+
+  <h3>2.2 Severity Levels (colour key)</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th class="ctr">Colour</th><th>Severity</th><th class="num">Weight</th><th>Meaning</th></tr></thead>
+    <tbody>
+    {% for s in severity_legend %}
+      <tr>
+        <td class="ctr"><span class="swatch" style="background:{{ s.hex }}"></span></td>
+        <td><span class="sev {{ s.severity }}">{{ s.severity }}</span></td>
+        <td class="num">{{ s.weight }}</td>
+        <td>{{ s.description }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <h3>2.3 Successful Attacks by Severity</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th class="ctr">Colour</th><th>Severity</th><th class="num">Successful Attacks</th><th class="num">Share of Successful</th></tr></thead>
+    <tbody>
+    {% for s in severity_rows %}
+      <tr>
+        <td class="ctr"><span class="swatch" style="background:{{ s.hex }}"></span></td>
+        <td><span class="sev {{ s.severity }}">{{ s.severity }}</span></td>
+        <td class="num">{{ s.count }}</td>
+        <td class="num">{{ (s.share * 100) | round(1) }}%</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <figure>{{ charts.severity_distribution | safe }}<figcaption>Figure 3. Successful attacks grouped by finding severity (colours match the key in 2.2).</figcaption></figure>
+
+  <h3>2.4 Risk Rating Scale</h3>
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th class="ctr">Security Score</th><th class="ctr">Risk</th><th>Interpretation</th></tr></thead>
+    <tbody>
+    {% for b in risk_bands %}
+      <tr class="{{ 'current' if b.current else '' }}">
+        <td class="ctr">{{ b.range }}</td>
+        <td class="ctr"><span class="risk-tag" style="color:{{ b.hex }}">{{ b.risk }}</span>{% if b.current %} &larr;{% endif %}</td>
+        <td>{{ b.meaning }}{% if b.current %} <em>(this assessment)</em>{% endif %}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <h2>3. Detailed Results by Attack Type</h2>
+  {% for c in breakdown %}
+  <h3>3.{{ loop.index }} {{ c.label }}</h3>
+  <div class="cat-head"><span class="meta">Category ASR <b>{{ (c.asr * 100) | round(1) }}%</b> · {{ c.successful }}/{{ c.total }} attacks succeeded</span></div>
+  <div class="table-scroll">
+  <table>
+    <thead><tr>
+      <th>Attack</th><th>Description</th><th class="ctr">Severity</th>
+      <th class="num">Tests</th><th class="num">Success</th><th class="num">ASR</th>
+      <th class="ctr">Status</th><th>Example payload</th>
+    </tr></thead>
+    <tbody>
+    {% for t in c.templates %}
+      <tr>
+        <td><b>{{ t.template_id }}</b></td>
+        <td>{{ t.description }}</td>
+        <td class="ctr"><span class="sev {{ t.severity }}">{{ t.severity }}</span></td>
+        <td class="num">{{ t.total }}</td>
+        <td class="num">{{ t.successful }}</td>
+        <td class="num">{{ (t.asr * 100) | round(1) }}%</td>
+        <td class="ctr"><span class="status {{ t.status }}">{{ t.status }}</span></td>
+        <td><code>{{ t.example }}</code></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% endfor %}
+
+  <h2>4. Key Vulnerability Findings</h2>
+  {% if findings %}
+    {% for f in findings %}
+    <div class="finding sev-{{ f.severity }}">
+      <h3>{{ f.finding_id }} <span class="badge {{ f.severity }}">{{ f.severity }}</span></h3>
+      <p><span class="label">Category:</span> {{ f.category }} · <span class="label">Status:</span> {{ f.status }}</p>
+      <p>{{ f.description }}</p>
+      <p><span class="label">Evidence:</span> {{ f.evidence }}</p>
+      <p><span class="label">Example payload:</span> <code>{{ f.example_payload }}</code></p>
+      <p><span class="label">Impact:</span> {{ f.impact }}</p>
+      <p><span class="label">Recommendation:</span> {{ f.recommendation }}</p>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p>No vulnerabilities were detected. The agent resisted all executed attacks.</p>
+  {% endif %}
+
+  <h2>5. Example Attack Timeline</h2>
+  {% if timeline %}
+  <ol class="timeline">
+    {% for e in timeline %}<li><code>{{ e.time }}</code> — {{ e.event }}</li>{% endfor %}
+  </ol>
+  {% else %}
+  <p>No successful-attack timeline to display.</p>
+  {% endif %}
+
+  <footer>
+    Report produced by AgentRed. This assessment reflects only the attacks that
+    were executed and does not constitute a guarantee of overall agent safety.
+  </footer>
+</div>
+</body>
+</html>

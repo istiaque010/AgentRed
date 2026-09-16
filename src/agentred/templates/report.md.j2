@@ -1,0 +1,112 @@
+# AgentRed: An Open-Source Red-Teaming Framework for Security Assessment of AI Agents
+
+_Security Assessment Report_
+
+**Assessment ID:** {{ meta.assessment_id }}
+**Generated:** {{ meta.generated_at }}
+
+---
+
+## 1. Executive Summary
+
+| Field | Value |
+|---|---|
+| Target Agent | {{ meta.agent_name }} |
+| Model | {{ meta.model }} |
+| Framework | {{ meta.framework }} |
+| Backend | {{ meta.backend }} |
+| Assessment Level | {{ meta.level | capitalize }} Scan |
+| Total Attacks | {{ assessment.total_attacks }} |
+| Successful Attacks | {{ assessment.successful_attacks }} |
+| Attack Success Rate | {{ asr_pct }}% |
+| Security Score | {{ assessment.security_score }}/100 |
+| **Overall Risk** | **{{ assessment.risk }}** |
+
+![Overall security score]({{ chart_files.security_score }})
+
+## 2. Results Overview
+
+### 2.1 Attack Category Summary
+
+| Category | Tests | Successful | ASR | Worst Severity |
+|---|---:|---:|---:|:--:|
+{% for c in breakdown %}
+| {{ c.label }} | {{ c.total }} | {{ c.successful }} | {{ (c.asr * 100) | round(1) }}% | {{ c.templates[0].severity if c.templates else "-" }} |
+{% endfor %}
+
+![Attack Success Rate by category]({{ chart_files.asr_by_category }})
+
+### 2.2 Severity Levels (colour key)
+
+| Colour | Severity | Weight | Meaning |
+|:--:|---|:--:|---|
+{% for s in severity_legend %}
+| {{ s.emoji }} | {{ s.severity }} | {{ s.weight }} | {{ s.description }} |
+{% endfor %}
+
+### 2.3 Successful Attacks by Severity
+
+| Colour | Severity | Successful Attacks | Share of Successful |
+|:--:|---|---:|---:|
+{% for s in severity_rows %}
+| {{ s.emoji }} | {{ s.severity }} | {{ s.count }} | {{ (s.share * 100) | round(1) }}% |
+{% endfor %}
+
+![Successful attacks by severity]({{ chart_files.severity_distribution }})
+
+### 2.4 Risk Rating Scale
+
+| Security Score | Risk | Interpretation |
+|:--:|:--:|---|
+{% for b in risk_bands %}
+| {{ b.range }} | {{ b.risk }}{% if b.current %} ← this assessment{% endif %} | {{ b.meaning }} |
+{% endfor %}
+
+## 3. Detailed Results by Attack Type
+
+{% for c in breakdown %}
+### 3.{{ loop.index }} {{ c.label }}
+
+**Category ASR:** {{ (c.asr * 100) | round(1) }}%  ·  **{{ c.successful }}/{{ c.total }}** attacks succeeded.
+
+| Attack | Description | Severity | Tests | Success | ASR | Status | Example payload |
+|---|---|:--:|---:|---:|---:|:--:|---|
+{% for t in c.templates %}
+| {{ t.template_id }} | {{ t.description }} | {{ t.severity }} | {{ t.total }} | {{ t.successful }} | {{ (t.asr * 100) | round(1) }}% | {{ t.status }} | `{{ t.example }}` |
+{% endfor %}
+
+{% endfor %}
+
+## 4. Key Vulnerability Findings
+
+{% if findings %}
+{% for f in findings %}
+### 4.{{ loop.index }} {{ f.finding_id }} — {{ f.severity }}
+
+- **Category:** {{ f.category }}
+- **Status:** {{ f.status }}
+- **Description:** {{ f.description }}
+- **Evidence:** {{ f.evidence }}
+- **Example payload:** `{{ f.example_payload }}`
+- **Impact:** {{ f.impact }}
+- **Recommendation:** {{ f.recommendation }}
+
+{% endfor %}
+{% else %}
+No vulnerabilities were detected. The agent resisted all executed attacks.
+{% endif %}
+
+## 5. Example Attack Timeline
+
+{% if timeline %}
+{% for e in timeline %}
+- `{{ e.time }}` — {{ e.event }}
+{% endfor %}
+{% else %}
+No successful-attack timeline to display.
+{% endif %}
+
+---
+
+*Report produced by AgentRed. This assessment reflects only the attacks that
+were executed and does not constitute a guarantee of overall agent safety.*

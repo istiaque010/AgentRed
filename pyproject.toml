@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentred"
+version = "0.1.0"
+description = "An open-source red-teaming framework for security assessment of AI agents."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "AgentRed contributors" }]
+keywords = [
+    "ai-security",
+    "llm-security",
+    "red-teaming",
+    "prompt-injection",
+    "agent-security",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+
+# Core runtime dependencies. The engine also ships stdlib fallbacks
+# (urllib-based Ollama client) so a scan with the built-in mock backend
+# runs with only PyYAML + Jinja2 available.
+dependencies = [
+    "PyYAML>=6.0",
+    "Jinja2>=3.1",
+]
+
+[project.optional-dependencies]
+# Real target-agent execution against a local model.
+ollama = ["requests>=2.31"]
+# Run the target agent through a real LangGraph ReAct graph over Ollama.
+langgraph = [
+    "langgraph>=0.2",
+    "langchain-core>=0.3",
+    "langchain-ollama>=0.2",
+]
+# Development / testing.
+dev = ["pytest>=7.4"]
+
+[project.scripts]
+agentred = "agentred.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/your-org/AgentRed"
+Documentation = "https://github.com/your-org/AgentRed/tree/main/docs"
+Issues = "https://github.com/your-org/AgentRed/issues"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+agentred = ["templates/*.j2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
