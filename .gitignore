@@ -30,5 +30,5 @@ Thumbs.db
 # Local-only files (kept on disk, not published)
 /CLAUDE.md
 /docs/RESEARCH_SPEC.md
-/docs/CLAUDE_PROMPT.md
+/docs/INSTRUCTIONS.md
 /docs/status.md
