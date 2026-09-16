@@ -45,7 +45,7 @@ charts. Headline figures from the [sample report](examples/sample-report/)
 </p>
 
 <p align="center">
-  <a href="out/AgentRed_%20An%20Open-Source%20Red-Teaming%20Framework%20for%20Security%20Assessment%20of%20AI%20Agents.pdf">
+  <a href="https://github.com/istiaque010/AgentRed/blob/main/out/AgentRed_%20An%20Open-Source%20Red-Teaming%20Framework%20for%20Security%20Assessment%20of%20AI%20Agents.pdf">
     <img src="https://img.shields.io/badge/%F0%9F%93%84%20View%20Full%20Sample%20Report-PDF-e5484d?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="View the full sample report (PDF)">
   </a>
 </p>

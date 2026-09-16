@@ -8,6 +8,6 @@ unauthorized tools, leaking secrets, or exposing its system prompt).
 It is NOT an agent framework and does not deploy agents into production.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = ["__version__"]
