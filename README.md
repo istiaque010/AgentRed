@@ -32,6 +32,21 @@ never sends real email or touches your real filesystem).
   LOW/MEDIUM/HIGH/CRITICAL risk rating.
 - **Reports in Markdown + HTML**, plus machine-readable traces JSON.
 
+## Example report
+
+Every scan produces an article-ready report with per-attack-type tables and
+charts. Headline figures from the [sample report](examples/sample-report/)
+(mock backend, standard scan of the example agent):
+
+<p align="center">
+  <img src="examples/sample-report/security_score.svg" alt="Overall security score and risk band" width="680"><br><br>
+  <img src="examples/sample-report/asr_by_category.svg" alt="Attack Success Rate by category" width="680"><br><br>
+  <img src="examples/sample-report/severity_distribution.svg" alt="Successful attacks by severity" width="680">
+</p>
+
+📄 See the full sample: **[`examples/sample-report/report.md`](examples/sample-report/report.md)**
+(renders on GitHub) · the HTML version adds a one-click **Save as PDF** button.
+
 ## Install
 
 Requires **Python 3.11+**. The steps are the same on every OS; only the shell
