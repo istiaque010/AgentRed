@@ -15,8 +15,9 @@ import yaml
 
 from .models import Category, Severity
 
-# Default location of the bundled attack templates (repo-root/attacks).
-DEFAULT_ATTACKS_DIR = Path(__file__).resolve().parents[2] / "attacks"
+# Default location of the bundled attack templates. They ship inside the
+# package (src/agentred/data/attacks) so they are available after `pip install`.
+DEFAULT_ATTACKS_DIR = Path(__file__).resolve().parent / "data" / "attacks"
 
 _CATEGORY_FILES = {
     Category.PROMPT_INJECTION: "prompt_injection.yaml",

@@ -205,7 +205,8 @@ python -m agentred attacks --list
 
 1. **You describe the agent** in a YAML file: its model, tools, and which tools
    are sensitive (see [`examples/email_agent.yaml`](examples/email_agent.yaml)).
-2. **AgentRed generates attacks** from templates in [`attacks/`](attacks/).
+2. **AgentRed generates attacks** from templates bundled in
+   [`src/agentred/data/attacks/`](src/agentred/data/attacks/) (override with `--attacks-dir`).
 3. **Each attack is executed** against the agent inside a sandbox; a planted
    *canary secret* lets AgentRed catch data exfiltration.
 4. **Detectors analyse the trace** and raise findings.

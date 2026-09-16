@@ -1,8 +1,9 @@
 # AgentRed — Attack Framework
 
-Attacks live as YAML **templates** in the top-level `attacks/` directory, one
-file per category. The generator expands them into concrete `AttackCase`s sized
-to the scan budget.
+Attacks live as YAML **templates** in `src/agentred/data/attacks/` (bundled with
+the package), one file per category. The generator expands them into concrete
+`AttackCase`s sized to the scan budget. Point at a different directory with the
+`--attacks-dir` CLI flag.
 
 ## Categories
 
@@ -69,6 +70,6 @@ channel so a successful exfiltration actually carries the secret.
 
 Add entries to an existing YAML file, or create a new category:
 
-1. New `attacks/<name>.yaml`.
+1. New `src/agentred/data/attacks/<name>.yaml`.
 2. Register it in `attacks._CATEGORY_FILES` and add the id to `models.Category`.
 3. Add a matching detector (`docs/detectors.md`).

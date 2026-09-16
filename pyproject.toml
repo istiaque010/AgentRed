@@ -61,7 +61,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-agentred = ["templates/*.j2"]
+agentred = ["templates/*.j2", "data/attacks/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

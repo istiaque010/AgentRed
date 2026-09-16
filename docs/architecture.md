@@ -13,7 +13,7 @@ assessment report. Each stage has one responsibility and a typed contract
  AgentConfig ──────────────────────────────────────────────┐
      │                                                      │ (permissions,
      │                                                      │  canary, prompt)
- Attack Library (attacks/*.yaml)                            │
+ Attack Library (data/attacks/*.yaml)                       │
      │  AttackLibrary.load()                                │
      ▼                                                      │
  AttackTemplate[]                                           │
