@@ -28,7 +28,6 @@ Thumbs.db
 .vscode/
 
 # Local-only files (kept on disk, not published)
-/CLAUDE.md
 /docs/RESEARCH_SPEC.md
 /docs/INSTRUCTIONS.md
 /docs/status.md
