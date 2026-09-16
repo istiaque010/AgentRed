@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentred"
-version = "0.1.0"
+version = "0.1.1"
 description = "An open-source red-teaming framework for security assessment of AI agents."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -50,9 +50,9 @@ dev = ["pytest>=7.4"]
 agentred = "agentred.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/your-org/AgentRed"
-Documentation = "https://github.com/your-org/AgentRed/tree/main/docs"
-Issues = "https://github.com/your-org/AgentRed/issues"
+Homepage = "https://github.com/istiaque010/AgentRed"
+Documentation = "https://github.com/istiaque010/AgentRed/tree/main/docs"
+Issues = "https://github.com/istiaque010/AgentRed/issues"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
