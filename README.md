@@ -125,6 +125,10 @@ AgentRed 0.1.0 - security assessment
     json     : out/traces.json
 ```
 
+> **Want to see the output first?** Browse a pre-generated example in
+> [`examples/sample-report/`](examples/sample-report/) —
+> [`report.md`](examples/sample-report/report.md) renders right on GitHub.
+
 The report files land in the `out/` folder. **Open the HTML report:**
 
 <details open><summary><b>Windows</b></summary>
